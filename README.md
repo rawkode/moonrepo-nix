@@ -17,7 +17,14 @@ Add the plugin to your `.moon/toolchain.yml`:
 
 ```yaml
 nix:
-  plugin: "https://github.com/yourusername/moon-toolchain-nix/releases/download/v0.1.0/moon_toolchain_nix.wasm"
+  plugin: "github://rawkode/moonrepo-nix"
+```
+
+Or use a specific version:
+
+```yaml
+nix:
+  plugin: "github://rawkode/moonrepo-nix@v0.1.0"
 ```
 
 ## Configuration
@@ -124,6 +131,101 @@ Enable Flox in your toolchain:
 nix:
   useFlox: true
   floxEnvironment: "default"
+```
+
+## Script Limitations
+
+Due to how moon's plugin system works, **scripts cannot be automatically wrapped in Nix environments** like commands are. This is because moon's plugin API only allows setting environment variables and PATH for scripts, not wrapping them entirely.
+
+For scripts that need access to Nix-provided tools, you have several options:
+
+### Option 1: Use Commands Instead of Scripts
+
+The simplest solution is to use commands instead of scripts when you need Nix tools:
+
+```yaml
+# Instead of this:
+tasks:
+  test:
+    script: "node test.js && python check.py"
+
+# Use this:
+tasks:
+  test-js:
+    command: "node"
+    args: ["test.js"]
+  test-py:
+    command: "python"
+    args: ["check.py"]
+  test:
+    deps:
+      - "test-js"
+      - "test-py"
+```
+
+### Option 2: Use Nix Shebangs
+
+You can use Nix in your script shebangs to ensure the script runs in the correct environment:
+
+```yaml
+tasks:
+  build:
+    script: "./scripts/build.sh"
+```
+
+Where `scripts/build.sh` uses a Nix shebang:
+
+```bash
+#!/usr/bin/env nix-shell
+#!nix-shell -i bash -p nodejs python3
+
+# Now node and python are available
+node --version
+python3 --version
+```
+
+For flakes, you can use:
+
+```bash
+#!/usr/bin/env -S nix develop --command bash
+
+# Your script here with access to all flake-provided tools
+```
+
+### Option 3: Create a Wrapper Script
+
+Create a wrapper script that enters the Nix environment:
+
+```yaml
+tasks:
+  dev:
+    script: |
+      if [ -f flake.nix ]; then
+        nix develop --command bash -c '
+          npm install
+          npm run dev
+        '
+      else
+        echo "No flake.nix found!"
+        exit 1
+      fi
+```
+
+### Option 4: Use direnv
+
+If you're using direnv with Nix, scripts will automatically have access to the Nix environment:
+
+```bash
+# .envrc
+use flake
+```
+
+Then your scripts will work as expected:
+
+```yaml
+tasks:
+  test:
+    script: "npm test && cargo test"
 ```
 
 ## Building from Source

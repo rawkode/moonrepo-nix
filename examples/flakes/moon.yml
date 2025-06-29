@@ -2,6 +2,10 @@
 type: "application"
 language: "javascript"
 
+toolchain:
+  nix:
+    disabled: false
+
 tasks:
   hello:
     command: "node"
@@ -18,3 +22,18 @@ tasks:
     command: "rustc"
     args:
       - "--version"
+  
+  # Example of using a script with Nix shebang
+  script-with-shebang:
+    script: "./scripts/test-with-nix.sh"
+    
+  # Example of inline wrapper script
+  script-wrapper:
+    script: |
+      # Manually wrap in nix develop
+      nix develop --command bash -c '
+        echo "Running in Nix flake environment"
+        node --version
+        python3 --version
+        rustc --version
+      '

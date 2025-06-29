@@ -2,6 +2,10 @@
 type: "application"
 language: "javascript"
 
+toolchain:
+  nix:
+    disabled: false
+
 tasks:
   hello:
     command: "echo"

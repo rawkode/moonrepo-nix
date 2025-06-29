@@ -5,7 +5,13 @@
       "Bash(find:*)",
       "Bash(grep:*)",
       "Bash(./build.sh)",
-      "Bash(rg:*)"
+      "Bash(rg:*)",
+      "Bash(moon run:*)",
+      "Bash(cargo build:*)",
+      "Bash(cp:*)",
+      "Bash(moon sync:*)",
+      "Bash(cat:*)",
+      "Bash(mkdir:*)"
     ],
     "deny": []
   }

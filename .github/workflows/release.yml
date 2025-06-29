@@ -3,43 +3,38 @@ name: Release
 on:
   push:
     tags:
-      - 'v*'
+      - "v[0-9]+.[0-9]+.[0-9]+*"
+
+env:
+  CARGO_TERM_COLOR: always
 
 jobs:
-  build:
+  release:
+    name: Release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Setup Rust
-        uses: actions-rs/toolchain@v1
+
+      - uses: moonrepo/setup-rust@v1
         with:
-          toolchain: stable
-          target: wasm32-wasi
-          override: true
-      
-      - name: Build plugin
+          cache-base: master
+
+      - name: Setup toolchain
         run: |
-          cargo build --release --target wasm32-wasi
-          cp target/wasm32-wasi/release/moon_toolchain_nix.wasm .
-      
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          rustup target add wasm32-wasip1
+
+      - name: Build plugin
+        uses: moonrepo/build-wasm-plugin@v0
+        id: plugin
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
-      
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          target: wasm32-wasip1
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./moon_toolchain_nix.wasm
-          asset_name: moon_toolchain_nix.wasm
-          asset_content_type: application/wasm
+          fail_on_unmatched_files: true
+          generate_release_notes: true
+          prerelease: ${{ contains(github.ref, '-alpha') || contains(github.ref, '-beta') || contains(github.ref, '-rc') }}
+          files: ${{ steps.plugin.outputs.artifact-path }}

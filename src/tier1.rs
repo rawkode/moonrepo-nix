@@ -1,6 +1,6 @@
 use crate::config::NixToolchainConfig;
 use extism_pdk::*;
-use moon_pdk::{parse_toolchain_config, is_project_toolchain_enabled};
+use moon_pdk::{is_project_toolchain_enabled, parse_toolchain_config};
 use moon_pdk_api::*;
 use schematic::SchemaBuilder;
 
@@ -33,10 +33,7 @@ pub fn register_toolchain(
             "flox".into(),
             "devenv".into(),
         ],
-        lock_file_names: vec![
-            "flake.lock".into(),
-            "devenv.lock".into(),
-        ],
+        lock_file_names: vec!["flake.lock".into(), "devenv.lock".into()],
         manifest_file_names: vec![
             "flake.nix".into(),
             "shell.nix".into(),
@@ -110,7 +107,7 @@ pub fn define_docker_metadata(
 #[plugin_fn]
 pub fn sync_project(Json(input): Json<SyncProjectInput>) -> FnResult<Json<SyncOutput>> {
     let mut output = SyncOutput::default();
-    
+
     // Check if Nix toolchain is enabled for this project
     if !is_project_toolchain_enabled(&input.project) {
         output.skipped = true;
@@ -118,10 +115,10 @@ pub fn sync_project(Json(input): Json<SyncProjectInput>) -> FnResult<Json<SyncOu
     }
 
     let config = parse_toolchain_config::<NixToolchainConfig>(input.toolchain_config)?;
-    
+
     // In a monorepo, each project may have its own Nix configuration
     let project_root = input.context.workspace_root.join(&input.project.source);
-    
+
     // Check for project-specific Nix configurations
     struct NixConfigs {
         flake: bool,
@@ -129,22 +126,28 @@ pub fn sync_project(Json(input): Json<SyncProjectInput>) -> FnResult<Json<SyncOu
         devenv: bool,
         flox: bool,
     }
-    
+
     let configs = NixConfigs {
         flake: config.use_flake && project_root.join("flake.nix").exists(),
         shell_nix: config.use_shell_nix && project_root.join("shell.nix").exists(),
-        devenv: config.use_devenv && (project_root.join("devenv.nix").exists() || project_root.join("devenv.yaml").exists()),
-        flox: config.use_flox && (project_root.join(".flox/env.json").exists() || project_root.join(".flox/env.toml").exists()),
+        devenv: config.use_devenv
+            && (project_root.join("devenv.nix").exists()
+                || project_root.join("devenv.yaml").exists()),
+        flox: config.use_flox
+            && (project_root.join(".flox/env.json").exists()
+                || project_root.join(".flox/env.toml").exists()),
     };
-    
-    // For now, we just track which Nix environments are available
-    // In the future, we could create operations to sync lock files or update configurations
-    let has_project_config = configs.flake || configs.shell_nix || configs.devenv || configs.flox;
-    
-    if has_project_config {
-        // Project has its own Nix configuration
-        // Could add operations here in the future to sync lock files, etc.
-    }
-    
+
+    // Determine which Nix environment type we have
+    let _nix_env_type = match configs {
+        NixConfigs { flake: true, .. } => Some(("flake", project_root.join("flake.nix"))),
+        NixConfigs {
+            shell_nix: true, ..
+        } => Some(("shell", project_root.join("shell.nix"))),
+        NixConfigs { devenv: true, .. } => Some(("devenv", project_root.clone())),
+        NixConfigs { flox: true, .. } => Some(("flox", project_root.clone())),
+        _ => None,
+    };
+
     Ok(Json(output))
 }

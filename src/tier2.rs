@@ -12,30 +12,111 @@ pub fn extend_task_command(
     // Get the toolchain config from the workspace
     let config = get_toolchain_config::<NixToolchainConfig>()?;
     let env = get_host_environment()?;
-    
+
     // Check for various Nix environment setups
     let workspace_root = &input.context.workspace_root;
-    
+
+    // Get the project directory from the task target
+    let target_str = input.task.target.to_string();
+    let project_id = target_str.split(':').next().unwrap_or("");
+    let project_root = workspace_root.join(project_id);
+
     // Determine which Nix environment to use
     enum NixEnv {
-        Flake,
-        Devenv,
-        Flox,
-        ShellNix,
+        ProjectFlake,
+        ProjectDevenv,
+        ProjectFlox,
+        ProjectShellNix,
+        WorkspaceFlake,
+        WorkspaceDevenv,
+        WorkspaceFlox,
+        WorkspaceShellNix,
         None,
     }
-    
+
     let nix_env = match () {
-        _ if config.use_flake && workspace_root.join("flake.nix").exists() => NixEnv::Flake,
-        _ if config.use_devenv && (workspace_root.join("devenv.nix").exists() || workspace_root.join("devenv.yaml").exists()) => NixEnv::Devenv,
-        _ if config.use_flox && workspace_root.join(".flox").exists() => NixEnv::Flox,
-        _ if config.use_shell_nix && workspace_root.join("shell.nix").exists() => NixEnv::ShellNix,
+        // Check project-specific configurations first
+        _ if config.use_flake && project_root.join("flake.nix").exists() => NixEnv::ProjectFlake,
+        _ if config.use_devenv
+            && (project_root.join("devenv.nix").exists()
+                || project_root.join("devenv.yaml").exists()) =>
+        {
+            NixEnv::ProjectDevenv
+        }
+        _ if config.use_flox && project_root.join(".flox").exists() => NixEnv::ProjectFlox,
+        _ if config.use_shell_nix && project_root.join("shell.nix").exists() => {
+            NixEnv::ProjectShellNix
+        }
+        // Fall back to workspace-level configurations
+        _ if config.use_flake && workspace_root.join("flake.nix").exists() => {
+            NixEnv::WorkspaceFlake
+        }
+        _ if config.use_devenv
+            && (workspace_root.join("devenv.nix").exists()
+                || workspace_root.join("devenv.yaml").exists()) =>
+        {
+            NixEnv::WorkspaceDevenv
+        }
+        _ if config.use_flox && workspace_root.join(".flox").exists() => NixEnv::WorkspaceFlox,
+        _ if config.use_shell_nix && workspace_root.join("shell.nix").exists() => {
+            NixEnv::WorkspaceShellNix
+        }
         _ => NixEnv::None,
     };
-    
+
     // Wrap command in appropriate Nix environment
     match nix_env {
-        NixEnv::Flake => {
+        NixEnv::ProjectFlake => {
+            output.command = Some("nix".into());
+            output.args = Some(Extend::Prepend(vec![
+                "develop".into(),
+                project_root
+                    .real_path()
+                    .map(|p| p.to_string_lossy().to_string())
+                    .unwrap_or_else(|| project_root.to_string()),
+                "--command".into(),
+                input.command.clone(),
+            ]));
+        }
+        NixEnv::ProjectDevenv => {
+            output.command = Some("devenv".into());
+            output.args = Some(Extend::Prepend(vec![
+                "shell".into(),
+                "-C".into(),
+                project_root
+                    .real_path()
+                    .map(|p| p.to_string_lossy().to_string())
+                    .unwrap_or_else(|| project_root.to_string()),
+                "--".into(),
+                input.command.clone(),
+            ]));
+        }
+        NixEnv::ProjectFlox => {
+            output.command = Some("flox".into());
+            output.args = Some(Extend::Prepend(vec![
+                "activate".into(),
+                "-d".into(),
+                project_root
+                    .real_path()
+                    .map(|p| p.to_string_lossy().to_string())
+                    .unwrap_or_else(|| project_root.to_string()),
+                "--".into(),
+                input.command.clone(),
+            ]));
+        }
+        NixEnv::ProjectShellNix => {
+            output.command = Some("nix-shell".into());
+            output.args = Some(Extend::Replace(vec![
+                project_root
+                    .join("shell.nix")
+                    .real_path()
+                    .map(|p| p.to_string_lossy().to_string())
+                    .unwrap_or_else(|| project_root.join("shell.nix").to_string()),
+                "--run".into(),
+                format!("{} {}", input.command, input.args.join(" ")),
+            ]));
+        }
+        NixEnv::WorkspaceFlake => {
             output.command = Some("nix".into());
             output.args = Some(Extend::Prepend(vec![
                 "develop".into(),
@@ -43,7 +124,7 @@ pub fn extend_task_command(
                 input.command.clone(),
             ]));
         }
-        NixEnv::Devenv => {
+        NixEnv::WorkspaceDevenv => {
             output.command = Some("devenv".into());
             output.args = Some(Extend::Prepend(vec![
                 "shell".into(),
@@ -51,7 +132,7 @@ pub fn extend_task_command(
                 input.command.clone(),
             ]));
         }
-        NixEnv::Flox => {
+        NixEnv::WorkspaceFlox => {
             output.command = Some("flox".into());
             output.args = Some(Extend::Prepend(vec![
                 "activate".into(),
@@ -59,7 +140,7 @@ pub fn extend_task_command(
                 input.command.clone(),
             ]));
         }
-        NixEnv::ShellNix => {
+        NixEnv::WorkspaceShellNix => {
             output.command = Some("nix-shell".into());
             output.args = Some(Extend::Replace(vec![
                 "--run".into(),
@@ -68,7 +149,7 @@ pub fn extend_task_command(
         }
         NixEnv::None => {}
     }
-    
+
     // Add Nix paths to PATH
     let mut paths = vec![];
     if let Some(nix_profiles) = env.home_dir.join(".nix-profile/bin").real_path() {
@@ -77,7 +158,7 @@ pub fn extend_task_command(
     if let Ok(path) = PathBuf::from("/nix/var/nix/profiles/default/bin").canonicalize() {
         paths.push(path);
     }
-    
+
     if !paths.is_empty() {
         output.paths = paths;
     }
@@ -91,8 +172,8 @@ pub fn extend_task_script(
 ) -> FnResult<Json<ExtendTaskScriptOutput>> {
     let mut output = ExtendTaskScriptOutput::default();
     let env = get_host_environment()?;
-    
-    // Add Nix paths for scripts
+
+    // Add Nix paths to PATH
     let mut paths = vec![];
     if let Some(nix_profiles) = env.home_dir.join(".nix-profile/bin").real_path() {
         paths.push(nix_profiles);
@@ -100,7 +181,7 @@ pub fn extend_task_script(
     if let Ok(path) = PathBuf::from("/nix/var/nix/profiles/default/bin").canonicalize() {
         paths.push(path);
     }
-    
+
     if !paths.is_empty() {
         output.paths = paths;
     }
@@ -114,7 +195,7 @@ pub fn locate_dependencies_root(
 ) -> FnResult<Json<LocateDependenciesRootOutput>> {
     let mut output = LocateDependenciesRootOutput::default();
     let config = parse_toolchain_config::<NixToolchainConfig>(input.toolchain_config)?;
-    
+
     // Priority order for locating dependencies
     let files_to_check: Vec<(&str, bool)> = vec![
         ("flake.lock", config.use_flake),
@@ -126,7 +207,7 @@ pub fn locate_dependencies_root(
         ("shell.nix", config.use_shell_nix),
         ("default.nix", true), // Always check as fallback
     ];
-    
+
     // Find the first matching file
     for (file, enabled) in files_to_check {
         match (enabled, moon_pdk::locate_root(&input.starting_dir, file)) {
@@ -147,7 +228,7 @@ pub fn install_dependencies(
 ) -> FnResult<Json<InstallDependenciesOutput>> {
     let mut output = InstallDependenciesOutput::default();
     let config = parse_toolchain_config::<NixToolchainConfig>(input.toolchain_config)?;
-    
+
     // Determine which install command to use based on environment
     enum InstallType {
         FlakeLock,
@@ -155,35 +236,35 @@ pub fn install_dependencies(
         NixEnvPackages(Vec<String>),
         None,
     }
-    
+
     let install_type = match () {
-        _ if config.use_flake && input.root.join("flake.nix").exists() && !input.root.join("flake.lock").exists() => {
+        _ if config.use_flake
+            && input.root.join("flake.nix").exists()
+            && !input.root.join("flake.lock").exists() =>
+        {
             InstallType::FlakeLock
         }
-        _ if config.use_devenv && (input.root.join("devenv.nix").exists() || input.root.join("devenv.yaml").exists()) => {
+        _ if config.use_devenv
+            && (input.root.join("devenv.nix").exists()
+                || input.root.join("devenv.yaml").exists()) =>
+        {
             InstallType::DevenvInfo
         }
-        _ if !config.packages.is_empty() => {
-            InstallType::NixEnvPackages(config.packages.clone())
-        }
+        _ if !config.packages.is_empty() => InstallType::NixEnvPackages(config.packages.clone()),
         _ => InstallType::None,
     };
-    
+
     output.install_command = match install_type {
-        InstallType::FlakeLock => {
-            Some(
-                ExecCommandInput::new("nix", ["flake", "lock"])
-                    .cwd(input.root.clone())
-                    .into(),
-            )
-        }
-        InstallType::DevenvInfo => {
-            Some(
-                ExecCommandInput::new("devenv", ["info"])
-                    .cwd(input.root.clone())
-                    .into(),
-            )
-        }
+        InstallType::FlakeLock => Some(
+            ExecCommandInput::new("nix", ["flake", "lock"])
+                .cwd(input.root.clone())
+                .into(),
+        ),
+        InstallType::DevenvInfo => Some(
+            ExecCommandInput::new("devenv", ["info"])
+                .cwd(input.root.clone())
+                .into(),
+        ),
         InstallType::NixEnvPackages(packages) => {
             let mut args = vec!["--install".into()];
             args.extend(packages);

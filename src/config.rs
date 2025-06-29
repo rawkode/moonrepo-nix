@@ -1,5 +1,5 @@
 use moon_config::BinEntry;
-use moon_pdk_api::{UnresolvedVersionSpec, config_struct};
+use moon_pdk_api::{config_struct, UnresolvedVersionSpec};
 use schematic::Config;
 
 config_struct!(
