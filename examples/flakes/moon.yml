@@ -1,0 +1,20 @@
+# Project configuration
+type: "application"
+language: "javascript"
+
+tasks:
+  hello:
+    command: "node"
+    args:
+      - "-e"
+      - "console.log('Hello from Nix flake environment!')"
+    
+  python-version:
+    command: "python3"
+    args:
+      - "--version"
+  
+  rust-version:
+    command: "rustc"
+    args:
+      - "--version"

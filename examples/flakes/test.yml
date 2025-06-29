@@ -1,0 +1,7 @@
+type: "application"
+
+tasks:
+  echo:
+    command: "echo"
+    args:
+      - "Hello from moon!"

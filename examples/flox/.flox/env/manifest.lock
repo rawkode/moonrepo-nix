@@ -1,0 +1,136 @@
+{
+  "lockfile-version": 1,
+  "manifest": {
+    "version": 1,
+    "install": {
+      "deno": {
+        "pkg-path": "deno"
+      }
+    },
+    "hook": {},
+    "profile": {},
+    "options": {}
+  },
+  "packages": [
+    {
+      "attr_path": "deno",
+      "broken": false,
+      "derivation": "/nix/store/n6b6hg97c3xxyd0br3ppp16lqgz3xiw4-deno-2.3.5.drv",
+      "description": "Secure runtime for JavaScript and TypeScript",
+      "install_id": "deno",
+      "license": "MIT",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=3e3afe5174c561dee0df6f2c2b2236990146329f",
+      "name": "deno-2.3.5",
+      "pname": "deno",
+      "rev": "3e3afe5174c561dee0df6f2c2b2236990146329f",
+      "rev_count": 811950,
+      "rev_date": "2025-06-07T08:35:48Z",
+      "scrape_date": "2025-06-09T04:23:50.938346Z",
+      "stabilities": [
+        "staging",
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "2.3.5",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/k6irlx940symmq61x6zlfi9ajlpl7ywd-deno-2.3.5"
+      },
+      "system": "aarch64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "deno",
+      "broken": false,
+      "derivation": "/nix/store/1lli8ny5mzlgfv127llzsb6w3v2vshk7-deno-2.3.5.drv",
+      "description": "Secure runtime for JavaScript and TypeScript",
+      "install_id": "deno",
+      "license": "MIT",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=3e3afe5174c561dee0df6f2c2b2236990146329f",
+      "name": "deno-2.3.5",
+      "pname": "deno",
+      "rev": "3e3afe5174c561dee0df6f2c2b2236990146329f",
+      "rev_count": 811950,
+      "rev_date": "2025-06-07T08:35:48Z",
+      "scrape_date": "2025-06-09T04:41:58.215560Z",
+      "stabilities": [
+        "staging",
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "2.3.5",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/rv2gnddrxg8wn357jmskgy87iww6rgpq-deno-2.3.5"
+      },
+      "system": "aarch64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "deno",
+      "broken": false,
+      "derivation": "/nix/store/fga4qw43694rm89asbp3imyahza6kyf8-deno-2.3.5.drv",
+      "description": "Secure runtime for JavaScript and TypeScript",
+      "install_id": "deno",
+      "license": "MIT",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=3e3afe5174c561dee0df6f2c2b2236990146329f",
+      "name": "deno-2.3.5",
+      "pname": "deno",
+      "rev": "3e3afe5174c561dee0df6f2c2b2236990146329f",
+      "rev_count": 811950,
+      "rev_date": "2025-06-07T08:35:48Z",
+      "scrape_date": "2025-06-09T04:58:21.165888Z",
+      "stabilities": [
+        "staging",
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "2.3.5",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/shv5vys4bz84pgamhblnpiqxc63h4xf7-deno-2.3.5"
+      },
+      "system": "x86_64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "deno",
+      "broken": false,
+      "derivation": "/nix/store/n8ldbli96971v0bfgwnrjc4flxqmbf3l-deno-2.3.5.drv",
+      "description": "Secure runtime for JavaScript and TypeScript",
+      "install_id": "deno",
+      "license": "MIT",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=3e3afe5174c561dee0df6f2c2b2236990146329f",
+      "name": "deno-2.3.5",
+      "pname": "deno",
+      "rev": "3e3afe5174c561dee0df6f2c2b2236990146329f",
+      "rev_count": 811950,
+      "rev_date": "2025-06-07T08:35:48Z",
+      "scrape_date": "2025-06-09T05:17:41.499910Z",
+      "stabilities": [
+        "staging",
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "2.3.5",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/0bh02jr0zlwilf57j4qd3y8p74lf4zwi-deno-2.3.5"
+      },
+      "system": "x86_64-linux",
+      "group": "toplevel",
+      "priority": 5
+    }
+  ]
+}

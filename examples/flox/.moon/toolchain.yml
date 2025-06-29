@@ -1,0 +1,15 @@
+# Moon toolchain configuration for Flox example
+nix:
+  plugin: "file://../../moon_toolchain_nix.wasm"
+  useFlake: false
+  useShellNix: false
+  useFlox: true
+  useDevenv: false
+  floxEnvironment: "default"
+
+# Example configurations for tools managed by Flox
+node:
+  version: "20.0.0"
+
+rust:
+  version: "1.75.0"

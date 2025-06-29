@@ -1,0 +1,12 @@
+# Moon toolchain configuration for Nix flakes example
+nix:
+  plugin: "file://../../moon_toolchain_nix.wasm"
+  useFlake: true
+  useShellNix: false
+  useFlox: false
+  useDevenv: false
+
+# Example node configuration that will work within the Nix environment
+# node:
+#   version: "20.0.0"
+#   packageManager: "pnpm"

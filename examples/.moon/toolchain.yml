@@ -1,0 +1,10 @@
+# Moon toolchain configuration using our Nix plugin
+$schema: "https://moonrepo.dev/schemas/toolchain.json"
+
+# Use our local Nix plugin
+nix:
+  plugin: "file:///home/rawkode/Code/src/github.com/rawkode/moonrepo-nix/moon_toolchain_nix.wasm"
+  useFlake: true
+  useFlox: true
+  useDevenv: true
+  useShellNix: true

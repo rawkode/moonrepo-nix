@@ -1,0 +1,15 @@
+# Project configuration for Flox example
+type: "application"
+language: "javascript"
+
+tasks:
+  hello:
+    command: "echo"
+    args:
+      - "Hello from Flox environment!"
+    
+  deno-version:
+    command: "deno"
+    args:
+      - "--version"
+  

@@ -1,0 +1,1 @@
+[{"actionNode":{"root":"","toolchainId":"nix"},"lockfileTimestamp":null,"manifestDependencies":{},"manifestPaths":[],"project":null,"toolchainConfig":{"floxEnvironment":"default","useDevenv":false,"useFlake":false,"useFlox":true,"useShellNix":false},"vendorDirExists":false}]

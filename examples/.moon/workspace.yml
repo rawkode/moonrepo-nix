@@ -1,0 +1,7 @@
+# Moon workspace configuration
+$schema: "https://moonrepo.dev/schemas/workspace.json"
+
+projects:
+  - "flox"
+  - "flakes"
+  - "devenv"

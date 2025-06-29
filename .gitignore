@@ -1,0 +1,48 @@
+# Rust
+target/
+Cargo.lock
+**/*.rs.bk
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+*.wasm
+dist/
+
+# Test coverage
+*.profraw
+*.profdata
+coverage/
+
+# Nix
+result
+result-*
+.direnv/
+
+# Environment and secrets
+.env
+.env.local
+.env.*
+
+# Logs and temporary files
+*.log
+*.tmp
+.cache/
+
+# Backup files
+*.bak
+*.orig
+
+# Additional editor files
+*.sublime-*
+.vim/
+*.code-workspace

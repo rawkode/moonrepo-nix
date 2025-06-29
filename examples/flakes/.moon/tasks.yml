@@ -1,0 +1,3 @@
+# Global task options
+taskOptions:
+  runDepsInParallel: false

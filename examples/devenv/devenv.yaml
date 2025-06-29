@@ -1,0 +1,6 @@
+# Devenv configuration in YAML format
+# This is an alternative to devenv.nix
+
+inputs:
+  nixpkgs:
+    url: github:NixOS/nixpkgs/nixos-unstable

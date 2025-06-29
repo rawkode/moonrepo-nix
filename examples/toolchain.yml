@@ -1,0 +1,27 @@
+# Example moon toolchain configuration with Nix
+
+# Basic Nix configuration
+nix:
+  # Enable automatic detection of flake.nix
+  useFlake: true
+  
+  # Optional: Install additional packages
+  packages:
+    - nodejs
+    - yarn
+
+# Alternative: Using devenv
+# nix:
+#   useDevenv: true
+#   packages: []
+
+# Alternative: Using Flox
+# nix:
+#   useFlox: true
+#   floxEnvironment: "default"
+#   packages: []
+
+# Alternative: Using traditional shell.nix
+# nix:
+#   useShellNix: true
+#   packages: []
