@@ -24,7 +24,7 @@ Or use a specific version:
 
 ```yaml
 nix:
-  plugin: "github://rawkode/moonrepo-nix@v0.1.0"
+  plugin: "github://rawkode/moonrepo-nix@v0.2.2"
 ```
 
 ## Configuration
@@ -35,19 +35,19 @@ Configure the Nix toolchain in your `.moon/toolchain.yml`:
 nix:
   # Enable automatic detection and usage of flake.nix
   useFlake: true
-  
+
   # Enable automatic detection and usage of shell.nix
   useShellNix: false
-  
+
   # Enable automatic detection and usage of Flox environments
   useFlox: false
-  
+
   # Enable automatic detection and usage of devenv
   useDevenv: false
-  
+
   # Flox environment name (defaults to "default")
   floxEnvironment: "default"
-  
+
   # List of Nix packages to install
   packages:
     - nodejs
@@ -232,13 +232,11 @@ tasks:
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/moon-toolchain-nix
-cd moon-toolchain-nix
+git clone https://github.com/rawkode/moonrepo-nix
+cd moonrepo-nix
 
 # Build the plugin
-cargo build --release --target wasm32-wasi
-
-# The plugin will be at target/wasm32-wasi/release/moon_toolchain_nix.wasm
+cargo build --release --target wasm32-wasip1
 ```
 
 ## License
