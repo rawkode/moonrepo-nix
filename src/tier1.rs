@@ -151,3 +151,15 @@ pub fn sync_project(Json(input): Json<SyncProjectInput>) -> FnResult<Json<SyncOu
 
     Ok(Json(output))
 }
+
+#[plugin_fn]
+pub fn parse_manifest(
+    Json(_input): Json<ParseManifestInput>,
+) -> FnResult<Json<ParseManifestOutput>> {
+    let output = ParseManifestOutput::default();
+
+    // For now, we don't parse Nix manifests for dependencies
+    // In the future, we could parse flake.nix inputs or shell.nix packages
+
+    Ok(Json(output))
+}
