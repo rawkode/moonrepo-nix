@@ -38,6 +38,10 @@ result-*
 *.tmp
 .cache/
 
+# moon cache
+.moon/cache/
+**/.moon/cache/
+
 # Backup files
 *.bak
 *.orig
