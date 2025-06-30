@@ -168,22 +168,46 @@ pub fn extend_task_command(
 
 #[plugin_fn]
 pub fn extend_task_script(
-    Json(_input): Json<ExtendTaskScriptInput>,
+    Json(input): Json<ExtendTaskScriptInput>,
 ) -> FnResult<Json<ExtendTaskScriptOutput>> {
     let mut output = ExtendTaskScriptOutput::default();
     let env = get_host_environment()?;
 
-    // Add Nix paths to PATH
-    let mut paths = vec![];
-    if let Some(nix_profiles) = env.home_dir.join(".nix-profile/bin").real_path() {
-        paths.push(nix_profiles);
-    }
-    if let Ok(path) = PathBuf::from("/nix/var/nix/profiles/default/bin").canonicalize() {
-        paths.push(path);
-    }
+    // Get the project ID from the task target
+    let target_str = input.task.target.to_string();
+    let project_id = target_str.split(':').next().unwrap_or("workspace");
 
-    if !paths.is_empty() {
-        output.paths = paths;
+    // Try to get the stored PATH for this project
+    let path_key = format!("nix_path_{}", project_id);
+    let type_key = format!("nix_type_{}", project_id);
+
+    // Check if we have a stored PATH for this project
+    if let Ok(Some(nix_path)) = var::get::<String>(&path_key) {
+        // Use the captured PATH from the Nix environment
+        output.env.insert("PATH".to_string(), nix_path);
+
+        // Optionally, add environment type info
+        if let Ok(Some(env_type)) = var::get::<String>(&type_key) {
+            output.env.insert("NIX_ENV_TYPE".to_string(), env_type);
+        }
+    } else if project_id != "workspace" {
+        // If project-specific PATH not found, try workspace PATH
+        if let Ok(Some(nix_path)) = var::get::<String>("nix_path_workspace") {
+            output.env.insert("PATH".to_string(), nix_path);
+        }
+    } else {
+        // Fallback to adding basic Nix paths
+        let mut paths = vec![];
+        if let Some(nix_profiles) = env.home_dir.join(".nix-profile/bin").real_path() {
+            paths.push(nix_profiles);
+        }
+        if let Ok(path) = PathBuf::from("/nix/var/nix/profiles/default/bin").canonicalize() {
+            paths.push(path);
+        }
+
+        if !paths.is_empty() {
+            output.paths = paths;
+        }
     }
 
     Ok(Json(output))
@@ -281,24 +305,15 @@ pub fn install_dependencies(
 }
 
 #[plugin_fn]
-pub fn parse_manifest(
-    Json(_input): Json<ParseManifestInput>,
-) -> FnResult<Json<ParseManifestOutput>> {
-    // For Nix, we don't parse manifest files for dependencies
-    // since Nix handles its own dependency management
-    Ok(Json(ParseManifestOutput::default()))
-}
-
-#[plugin_fn]
 pub fn setup_environment(
     Json(input): Json<SetupEnvironmentInput>,
 ) -> FnResult<Json<SetupEnvironmentOutput>> {
     let mut output = SetupEnvironmentOutput::default();
     let config = parse_toolchain_config::<NixToolchainConfig>(input.toolchain_config)?;
-    
+
     // Check for Nix environments and prepare them
     let workspace_root = &input.context.workspace_root;
-    
+
     // Determine which Nix environment to set up
     enum NixEnv {
         Flake,
@@ -307,7 +322,7 @@ pub fn setup_environment(
         ShellNix,
         None,
     }
-    
+
     let nix_env = match () {
         _ if config.use_flake && workspace_root.join("flake.nix").exists() => NixEnv::Flake,
         _ if config.use_devenv
@@ -320,7 +335,7 @@ pub fn setup_environment(
         _ if config.use_shell_nix && workspace_root.join("shell.nix").exists() => NixEnv::ShellNix,
         _ => NixEnv::None,
     };
-    
+
     // Add setup operations based on the environment type
     match nix_env {
         NixEnv::Flake => {
@@ -362,6 +377,6 @@ pub fn setup_environment(
             // No Nix environment found
         }
     }
-    
+
     Ok(Json(output))
 }

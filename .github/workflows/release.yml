@@ -17,13 +17,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: moonrepo/setup-rust@v1
+      - uses: cachix/install-nix-action@v30
         with:
-          cache-base: master
+          nix_path: nixpkgs=channel:nixos-unstable
 
-      - id: plugin
-        name: Build plugin
-        uses: moonrepo/build-wasm-plugin@v0.4.2
+      - uses: moonrepo/setup-moon-action@v1
+
+      - name: Run CI and build release
+        run: |
+          moon ci
+          sha256sum moon_toolchain_nix.wasm > moon_toolchain_nix.wasm.sha256
 
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2
@@ -32,5 +35,5 @@ jobs:
           generate_release_notes: true
           prerelease: ${{ contains(github.ref, '-alpha') || contains(github.ref, '-beta') || contains(github.ref, '-rc') }}
           files: |
-            builds/moon_toolchain_nix.wasm
-            builds/moon_toolchain_nix.wasm.sha256
+            moon_toolchain_nix.wasm
+            moon_toolchain_nix.wasm.sha256

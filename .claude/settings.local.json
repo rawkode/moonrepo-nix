@@ -13,7 +13,9 @@
       "Bash(cat:*)",
       "Bash(mkdir:*)",
       "WebFetch(domain:github.com)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(ls:*)",
+      "Bash(nix develop:*)"
     ],
     "deny": []
   }

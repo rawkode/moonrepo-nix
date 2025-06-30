@@ -16,27 +16,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: moonrepo/setup-rust@v1
+      - uses: cachix/install-nix-action@v30
         with:
-          components: rustfmt, clippy
-          cache-base: master
+          nix_path: nixpkgs=channel:nixos-unstable
 
-      - name: Setup toolchain
-        run: |
-          rustup target add wasm32-wasip1
+      - uses: moonrepo/setup-moon-action@v1
 
-      - name: Check formatting
-        run: cargo fmt --check
-
-      - name: Run clippy
-        run: cargo clippy --target wasm32-wasip1 -- -D warnings
-
-      - name: Build plugin
-        run: cargo build --target wasm32-wasip1 --release
+      - name: Run CI
+        run: moon ci
 
       - name: Upload WASM artifact
         uses: actions/upload-artifact@v4
         with:
           name: moon_toolchain_nix.wasm
-          path: target/wasm32-wasip1/release/moon_toolchain_nix.wasm
+          path: moon_toolchain_nix.wasm
           if-no-files-found: error
