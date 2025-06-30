@@ -21,9 +21,9 @@ jobs:
         with:
           cache-base: master
 
-      - name: Build plugin
+      - id: plugin
+        name: Build plugin
         uses: moonrepo/build-wasm-plugin@v0.4.2
-        id: plugin
 
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2
@@ -31,4 +31,6 @@ jobs:
           fail_on_unmatched_files: true
           generate_release_notes: true
           prerelease: ${{ contains(github.ref, '-alpha') || contains(github.ref, '-beta') || contains(github.ref, '-rc') }}
-          files: ${{ steps.plugin.outputs.artifact-path }}
+          files: |
+            builds/moon_toolchain_nix.wasm
+            builds/moon_toolchain_nix.wasm.sha256
