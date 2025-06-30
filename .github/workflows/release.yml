@@ -21,15 +21,9 @@ jobs:
         with:
           cache-base: master
 
-      - name: Setup toolchain
-        run: |
-          rustup target add wasm32-wasip1
-
       - name: Build plugin
-        uses: moonrepo/build-wasm-plugin@v0
+        uses: moonrepo/build-wasm-plugin@v0.4.2
         id: plugin
-        with:
-          target: wasm32-wasip1
 
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2

@@ -11,7 +11,9 @@
       "Bash(cp:*)",
       "Bash(moon sync:*)",
       "Bash(cat:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(curl:*)"
     ],
     "deny": []
   }
