@@ -6,7 +6,7 @@
     git
     nodejs_20
     nodePackages.yarn
-    go_1_21
+    go
   ];
 
   # Environment variables
@@ -22,8 +22,8 @@
     echo "Go version: $(go version)"
   '';
 
-  # Pre-commit hooks
-  pre-commit.hooks = {
+  # Git hooks
+  git-hooks.hooks = {
     prettier.enable = true;
     gofmt.enable = true;
   };

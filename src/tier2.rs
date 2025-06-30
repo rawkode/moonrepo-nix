@@ -279,3 +279,89 @@ pub fn install_dependencies(
 
     Ok(Json(output))
 }
+
+#[plugin_fn]
+pub fn parse_manifest(
+    Json(_input): Json<ParseManifestInput>,
+) -> FnResult<Json<ParseManifestOutput>> {
+    // For Nix, we don't parse manifest files for dependencies
+    // since Nix handles its own dependency management
+    Ok(Json(ParseManifestOutput::default()))
+}
+
+#[plugin_fn]
+pub fn setup_environment(
+    Json(input): Json<SetupEnvironmentInput>,
+) -> FnResult<Json<SetupEnvironmentOutput>> {
+    let mut output = SetupEnvironmentOutput::default();
+    let config = parse_toolchain_config::<NixToolchainConfig>(input.toolchain_config)?;
+    
+    // Check for Nix environments and prepare them
+    let workspace_root = &input.context.workspace_root;
+    
+    // Determine which Nix environment to set up
+    enum NixEnv {
+        Flake,
+        Devenv,
+        Flox,
+        ShellNix,
+        None,
+    }
+    
+    let nix_env = match () {
+        _ if config.use_flake && workspace_root.join("flake.nix").exists() => NixEnv::Flake,
+        _ if config.use_devenv
+            && (workspace_root.join("devenv.nix").exists()
+                || workspace_root.join("devenv.yaml").exists()) =>
+        {
+            NixEnv::Devenv
+        }
+        _ if config.use_flox && workspace_root.join(".flox").exists() => NixEnv::Flox,
+        _ if config.use_shell_nix && workspace_root.join("shell.nix").exists() => NixEnv::ShellNix,
+        _ => NixEnv::None,
+    };
+    
+    // Add setup operations based on the environment type
+    match nix_env {
+        NixEnv::Flake => {
+            // For flakes, we might want to ensure flake.lock exists
+            if !workspace_root.join("flake.lock").exists() {
+                output.commands.push(ExecCommand {
+                    command: ExecCommandInput::new("nix", ["flake", "lock"])
+                        .cwd(workspace_root.clone())
+                        .into(),
+                    label: Some("Lock Nix flake".into()),
+                    ..Default::default()
+                });
+            }
+        }
+        NixEnv::Devenv => {
+            // For devenv, run devenv info to initialize
+            output.commands.push(ExecCommand {
+                command: ExecCommandInput::new("devenv", ["info"])
+                    .cwd(workspace_root.clone())
+                    .into(),
+                label: Some("Initialize devenv".into()),
+                ..Default::default()
+            });
+        }
+        NixEnv::Flox => {
+            // For flox, we might want to initialize the environment
+            output.commands.push(ExecCommand {
+                command: ExecCommandInput::new("flox", ["install"])
+                    .cwd(workspace_root.clone())
+                    .into(),
+                label: Some("Initialize Flox environment".into()),
+                ..Default::default()
+            });
+        }
+        NixEnv::ShellNix => {
+            // For shell.nix, no specific setup needed
+        }
+        NixEnv::None => {
+            // No Nix environment found
+        }
+    }
+    
+    Ok(Json(output))
+}

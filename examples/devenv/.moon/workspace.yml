@@ -3,4 +3,4 @@ projects:
   - "."
 
 vcs:
-  provider: "git"
+  provider: "github"
