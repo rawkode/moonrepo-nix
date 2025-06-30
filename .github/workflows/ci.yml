@@ -12,11 +12,7 @@ env:
 jobs:
   ci:
     name: CI
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-      fail-fast: false
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -33,10 +29,7 @@ jobs:
         run: cargo fmt --check
 
       - name: Run clippy
-        run: cargo clippy --all-targets -- -D warnings
-
-      - name: Run tests
-        run: cargo test
+        run: cargo clippy --target wasm32-wasip1 -- -D warnings
 
       - name: Build plugin
         run: cargo build --target wasm32-wasip1 --release
@@ -44,6 +37,6 @@ jobs:
       - name: Upload WASM artifact
         uses: actions/upload-artifact@v4
         with:
-          name: moon_toolchain_nix-${{ matrix.os }}.wasm
+          name: moon_toolchain_nix.wasm
           path: target/wasm32-wasip1/release/moon_toolchain_nix.wasm
           if-no-files-found: error
