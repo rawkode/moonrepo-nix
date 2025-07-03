@@ -27,7 +27,7 @@ jobs:
         with:
           name: devenv
 
-      - uses: moonrepo/setup-moon-action@v1
+      - uses: moonrepo/setup-toolchain@v0
 
       - name: Run CI and build release
         run: |
