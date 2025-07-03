@@ -70,49 +70,32 @@ pub fn extend_task_command(
             output.command = Some("nix".into());
             output.args = Some(Extend::Prepend(vec![
                 "develop".into(),
-                project_root
-                    .real_path()
-                    .map(|p| p.to_string_lossy().to_string())
-                    .unwrap_or_else(|| project_root.to_string()),
                 "--command".into(),
                 input.command.clone(),
+                input.args.clone().join(" "),
             ]));
         }
         NixEnv::ProjectDevenv => {
             output.command = Some("devenv".into());
             output.args = Some(Extend::Prepend(vec![
                 "shell".into(),
-                "-C".into(),
-                project_root
-                    .real_path()
-                    .map(|p| p.to_string_lossy().to_string())
-                    .unwrap_or_else(|| project_root.to_string()),
                 "--".into(),
                 input.command.clone(),
+                input.args.clone().join(" "),
             ]));
         }
         NixEnv::ProjectFlox => {
             output.command = Some("flox".into());
             output.args = Some(Extend::Prepend(vec![
                 "activate".into(),
-                "-d".into(),
-                project_root
-                    .real_path()
-                    .map(|p| p.to_string_lossy().to_string())
-                    .unwrap_or_else(|| project_root.to_string()),
-                "--".into(),
                 input.command.clone(),
+                input.args.clone().join(" "),
             ]));
         }
         NixEnv::ProjectShellNix => {
             output.command = Some("nix-shell".into());
             output.args = Some(Extend::Replace(vec![
-                project_root
-                    .join("shell.nix")
-                    .real_path()
-                    .map(|p| p.to_string_lossy().to_string())
-                    .unwrap_or_else(|| project_root.join("shell.nix").to_string()),
-                "--run".into(),
+                "--command".into(),
                 format!("{} {}", input.command, input.args.join(" ")),
             ]));
         }
@@ -130,20 +113,21 @@ pub fn extend_task_command(
                 "shell".into(),
                 "--".into(),
                 input.command.clone(),
+                input.args.clone().join(" "),
             ]));
         }
         NixEnv::WorkspaceFlox => {
             output.command = Some("flox".into());
             output.args = Some(Extend::Prepend(vec![
                 "activate".into(),
-                "--".into(),
                 input.command.clone(),
+                input.args.clone().join(" "),
             ]));
         }
         NixEnv::WorkspaceShellNix => {
             output.command = Some("nix-shell".into());
             output.args = Some(Extend::Replace(vec![
-                "--run".into(),
+                "--command".into(),
                 format!("{} {}", input.command, input.args.join(" ")),
             ]));
         }
@@ -343,8 +327,7 @@ pub fn setup_environment(
             if !workspace_root.join("flake.lock").exists() {
                 output.commands.push(ExecCommand {
                     command: ExecCommandInput::new("nix", ["flake", "lock"])
-                        .cwd(workspace_root.clone())
-                        .into(),
+                        .cwd(workspace_root.clone()),
                     label: Some("Lock Nix flake".into()),
                     ..Default::default()
                 });
