@@ -27,6 +27,9 @@ jobs:
         with:
           name: devenv
 
+      - name: Install devenv.sh
+        run: nix profile install nixpkgs#devenv
+
       - uses: moonrepo/setup-toolchain@v0
 
       - name: Run CI and build release
