@@ -86,10 +86,10 @@ pub fn setup_environment(
             } else {
                 workspace_root
             };
-            // For devenv, run devenv info to initialize
+            // For devenv, run devenv shell pwd to force install and ensure dependencies are installed only once
             output.commands.push(ExecCommand {
-                command: ExecCommandInput::new("devenv", ["info"]).cwd(root.clone()),
-                label: Some("Initialize devenv".into()),
+                command: ExecCommandInput::new("devenv", ["shell", "pwd"]).cwd(root.clone()),
+                label: Some("Install devenv dependencies".into()),
                 ..Default::default()
             });
         }
