@@ -1,6 +1,0 @@
-# Moon workspace configuration
-projects:
-  - "."
-
-vcs:
-  provider: "github"

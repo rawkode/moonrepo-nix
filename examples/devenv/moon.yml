@@ -1,27 +1,19 @@
-# Project configuration for devenv example
 type: "application"
 language: "javascript"
 
-toolchain:
-  nix:
-    disabled: false
-
 tasks:
   hello:
-    command: "hello"  # This runs the devenv script defined in devenv.nix
-    
+    command: "hello"
+
   node-version:
     command: "node"
     args:
       - "--version"
-  
+
   go-version:
     command: "go"
     args:
       - "version"
-  
+
   env-check:
-    command: "sh"
-    args:
-      - "-c"
-      - "echo DEVENV_EXAMPLE=$DEVENV_EXAMPLE"
+    command: "printenv DEVENV_EXAMPLE"

@@ -1,4 +1,4 @@
-name: CI
+name: ci
 
 on:
   pull_request:
@@ -9,9 +9,12 @@ on:
 env:
   CARGO_TERM_COLOR: always
 
+permissions:
+  pull-requests: write
+
 jobs:
   ci:
-    name: CI
+    name: ci
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -26,14 +29,13 @@ jobs:
         with:
           name: devenv
 
-      - uses: moonrepo/setup-moon-action@v1
+      - run: nix profile install nixpkgs#devenv
 
-      - name: Run CI
-        run: moon ci fmt build
+      - uses: moonrepo/setup-toolchain@v0
 
-      - name: Upload WASM artifact
-        uses: actions/upload-artifact@v4
+      - run: moon ci format build
+
+      - uses: moonrepo/run-report-action@v1
+        if: github.event_name == 'pull_request'
         with:
-          name: moon_toolchain_nix.wasm
-          path: moon_toolchain_nix.wasm
-          if-no-files-found: error
+          access-token: ${{ secrets.GITHUB_TOKEN }}

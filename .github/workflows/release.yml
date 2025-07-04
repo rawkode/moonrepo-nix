@@ -1,4 +1,4 @@
-name: Release
+name: release
 
 on:
   push:
@@ -10,7 +10,7 @@ env:
 
 jobs:
   release:
-    name: Release
+    name: release
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -27,19 +27,19 @@ jobs:
         with:
           name: devenv
 
-      - uses: moonrepo/setup-moon-action@v1
+      - run: nix profile install nixpkgs#devenv
 
-      - name: Run CI and build release
-        run: |
-          moon ci install-release
-          sha256sum moon_toolchain_nix.wasm > moon_toolchain_nix.wasm.sha256
+      - uses: moonrepo/setup-toolchain@v0
 
-      - name: Create GitHub release
-        uses: softprops/action-gh-release@v2
+      - run: |
+          moon ci build-release
+          sha256sum target/wasm32-wasip1/release/moon_toolchain_nix.wasm > target/wasm32-wasip1/debug/moon_toolchain_nix.wasm.sha256
+
+      - uses: softprops/action-gh-release@v2
         with:
           fail_on_unmatched_files: true
           generate_release_notes: true
           prerelease: ${{ contains(github.ref, '-alpha') || contains(github.ref, '-beta') || contains(github.ref, '-rc') }}
           files: |
-            moon_toolchain_nix.wasm
-            moon_toolchain_nix.wasm.sha256
+             target/wasm32-wasip1/release/moon_toolchain_nix.wasm
+             target/wasm32-wasip1/debug/moon_toolchain_nix.wasm.sha256
