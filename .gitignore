@@ -1,3 +1,6 @@
+# Moon
+.moon/cache
+
 # Rust
 target/
 Cargo.lock

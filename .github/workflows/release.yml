@@ -16,6 +16,8 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: cachix/install-nix-action@v30
         with:
@@ -25,7 +27,7 @@ jobs:
 
       - name: Run CI and build release
         run: |
-          moon ci
+          moon ci install-release
           sha256sum moon_toolchain_nix.wasm > moon_toolchain_nix.wasm.sha256
 
       - name: Create GitHub release

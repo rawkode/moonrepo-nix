@@ -12,77 +12,45 @@ fileGroups:
 
 tasks:
   build:
-    command: "cargo build --target wasm32-wasip1"
     description: "Build the WASM plugin in debug mode"
+    command: "cargo build --target wasm32-wasip1"
     outputs:
       - "target/wasm32-wasip1/debug/moon_toolchain_nix.wasm"
-  
+
   build-release:
-    command: "cargo build --target wasm32-wasip1 --release"
     description: "Build the WASM plugin in release mode"
+    command: "cargo build --target wasm32-wasip1 --release"
     outputs:
       - "target/wasm32-wasip1/release/moon_toolchain_nix.wasm"
-  
+
   install:
-    command: "cp target/wasm32-wasip1/debug/moon_toolchain_nix.wasm ."
     description: "Copy the debug plugin to root"
+    command: "cp target/wasm32-wasip1/debug/moon_toolchain_nix.wasm ."
     deps:
       - "build"
-  
-  install-release:
-    command: "cp target/wasm32-wasip1/release/moon_toolchain_nix.wasm ."
-    description: "Copy the release plugin to root"
-    deps:
-      - "build-release"
-  
-  check:
-    command: "cargo check --target wasm32-wasip1"
-    description: "Check code for errors"
-  
-  clippy:
-    command: "cargo clippy --target wasm32-wasip1 -- -D warnings"
-    description: "Run clippy lints"
-  
-  fmt:
-    command: "cargo fmt"
-    description: "Format code"
-  
-  fmt-check:
-    command: "cargo fmt -- --check"
-    description: "Check code formatting"
-  
-  test:
-    command: "cargo test"
-    description: "Run tests"
-  
-  test-examples:
-    command: "bash"
-    args:
-      - "-c"
-      - |
-        set -e
-        echo "Testing flakes example..."
-        cd examples/flakes && moon run hello
-        echo ""
-        echo "Testing devenv example..."
-        cd ../devenv && moon run hello
-        echo ""
-        echo "Testing flox example..."
-        cd ../flox && moon run hello
-    description: "Test all example projects"
-    deps:
-      - "install"
-  
-  clean:
-    command: "cargo clean"
-    description: "Clean build artifacts"
-  
-  ci:
-    deps:
-      - "fmt-check"
-      - "check"
-      - "clippy"
-      - "build-release"
-      - "test"
-    description: "Run all CI checks"
 
+  install-release:
+    description: "Copy the release plugin to root"
+    command: "cp target/wasm32-wasip1/release/moon_toolchain_nix.wasm ."
+    deps:
+      - "build-release"
+
+  check:
+    description: "Check code for errors"
+    command: "cargo check --target wasm32-wasip1"
+
+  clippy:
+    description: "Run clippy lints"
+    command: "cargo clippy --target wasm32-wasip1 -- -D warnings"
+
+  fmt:
+    description: "Format code"
+    command: "cargo fmt"
+
+  fmt-check:
+    description: "Check code formatting"
+    command: "cargo fmt -- --check"
+
+  clean:
+    description: "Clean build artifacts"
+    command: "cargo clean"

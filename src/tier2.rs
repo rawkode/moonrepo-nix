@@ -353,9 +353,7 @@ pub fn setup_environment(
         NixEnv::Devenv => {
             // For devenv, run devenv info to initialize
             output.commands.push(ExecCommand {
-                command: ExecCommandInput::new("devenv", ["info"])
-                    .cwd(workspace_root.clone())
-                    .into(),
+                command: ExecCommandInput::new("devenv", ["info"]).cwd(workspace_root.clone()),
                 label: Some("Initialize devenv".into()),
                 ..Default::default()
             });
@@ -363,9 +361,7 @@ pub fn setup_environment(
         NixEnv::Flox => {
             // For flox, we might want to initialize the environment
             output.commands.push(ExecCommand {
-                command: ExecCommandInput::new("flox", ["install"])
-                    .cwd(workspace_root.clone())
-                    .into(),
+                command: ExecCommandInput::new("flox", ["install"]).cwd(workspace_root.clone()),
                 label: Some("Initialize Flox environment".into()),
                 ..Default::default()
             });
