@@ -3,6 +3,9 @@ project:
   description: "Moon plugin for Nix integration"
   owner: "rawkode"
 
+toolchain:
+  default: nix
+
 fileGroups:
   source:
     - "src/**/*.rs"

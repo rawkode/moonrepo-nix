@@ -1,3 +1,3 @@
 nix:
-  plugin: "github://rawkode/moonrepo-nix@0.2.3"
-  useFlake: true
+  plugin: "github://rawkode/moonrepo-nix@0.2.4"
+  useDevenv: true
