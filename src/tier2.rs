@@ -68,29 +68,24 @@ pub fn extend_task_command(
     match nix_env {
         NixEnv::ProjectFlake => {
             output.command = Some("nix".into());
-            output.args = Some(Extend::Prepend(vec![
-                "develop".into(),
-                "--command".into(),
-                input.command.clone(),
-                input.args.clone().join(" "),
-            ]));
+            let mut args = vec!["develop".into(), "--command".into(), input.command.clone()];
+            args.extend(input.args.clone());
+            
+            output.args = Some(Extend::Prepend(args));
         }
         NixEnv::ProjectDevenv => {
             output.command = Some("devenv".into());
-            output.args = Some(Extend::Prepend(vec![
-                "shell".into(),
-                "--".into(),
-                input.command.clone(),
-                input.args.clone().join(" "),
-            ]));
+            let mut args = vec!["shell".into(), "--".into(), input.command.clone()];
+            args.extend(input.args.clone());
+
+            output.args = Some(Extend::Prepend(args));
         }
         NixEnv::ProjectFlox => {
             output.command = Some("flox".into());
-            output.args = Some(Extend::Prepend(vec![
-                "activate".into(),
-                input.command.clone(),
-                input.args.clone().join(" "),
-            ]));
+            let mut args = vec!["activate".into(), "--".into(), input.command.clone()];
+            args.extend(input.args.clone());
+            
+            output.args = Some(Extend::Prepend(args));
         }
         NixEnv::ProjectShellNix => {
             output.command = Some("nix-shell".into());
@@ -101,28 +96,24 @@ pub fn extend_task_command(
         }
         NixEnv::WorkspaceFlake => {
             output.command = Some("nix".into());
-            output.args = Some(Extend::Prepend(vec![
-                "develop".into(),
-                "--command".into(),
-                input.command.clone(),
-            ]));
+            let mut args = vec!["develop".into(), "--command".into(), input.command.clone()];
+            args.extend(input.args.clone());
+            
+            output.args = Some(Extend::Prepend(args));
         }
         NixEnv::WorkspaceDevenv => {
             output.command = Some("devenv".into());
-            output.args = Some(Extend::Prepend(vec![
-                "shell".into(),
-                "--".into(),
-                input.command.clone(),
-                input.args.clone().join(" "),
-            ]));
+            let mut args = vec!["shell".into(), "--".into(), input.command.clone()];
+            args.extend(input.args.clone());
+            
+            output.args = Some(Extend::Prepend(args));
         }
         NixEnv::WorkspaceFlox => {
             output.command = Some("flox".into());
-            output.args = Some(Extend::Prepend(vec![
-                "activate".into(),
-                input.command.clone(),
-                input.args.clone().join(" "),
-            ]));
+            let mut args = vec!["activate".into(), "--".into(), input.command.clone()];
+            args.extend(input.args.clone());
+            
+            output.args = Some(Extend::Prepend(args));
         }
         NixEnv::WorkspaceShellNix => {
             output.command = Some("nix-shell".into());
