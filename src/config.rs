@@ -3,8 +3,6 @@ use moon_pdk_api::{config_struct, UnresolvedVersionSpec};
 use schematic::Config;
 
 config_struct!(
-    /// Configures and enables the Nix toolchain.
-    /// Docs: https://moonrepo.dev/docs/config/toolchain#nix
     #[derive(Config)]
     pub struct NixToolchainConfig {
         /// List of packages to automatically install using `nix-env`.

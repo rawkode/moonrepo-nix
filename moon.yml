@@ -15,45 +15,40 @@ fileGroups:
 
 tasks:
   build:
-    description: "Build the WASM plugin in debug mode"
-    command: "cargo build --target wasm32-wasip1"
+    description: "Build the WebAssembly Plugin"
+    command: "cargo"
+    args: ["build", "--target", "wasm32-wasip1"]
     outputs:
       - "target/wasm32-wasip1/debug/moon_toolchain_nix.wasm"
 
   build-release:
-    description: "Build the WASM plugin in release mode"
-    command: "cargo build --target wasm32-wasip1 --release"
+    description: "Build the WebAssembly Plugin for Release"
+    command: "cargo"
+    args: ["build", "--target", "wasm32-wasip1", "--release"]
     outputs:
       - "target/wasm32-wasip1/release/moon_toolchain_nix.wasm"
 
-  install:
-    description: "Copy the debug plugin to root"
-    command: "cp target/wasm32-wasip1/debug/moon_toolchain_nix.wasm ."
-    deps:
-      - "build"
-
-  install-release:
-    description: "Copy the release plugin to root"
-    command: "cp target/wasm32-wasip1/release/moon_toolchain_nix.wasm ."
-    deps:
-      - "build-release"
-
   check:
-    description: "Check code for errors"
-    command: "cargo check --target wasm32-wasip1"
+    description: "Run Cargo Check"
+    command: "cargo"
+    args: ["check", "--target", "wasm32-wasip1"]
 
   clippy:
-    description: "Run clippy lints"
-    command: "cargo clippy --target wasm32-wasip1 -- -D warnings"
+    description: "Run Cargo Clippy"
+    command: "cargo"
+    args: ["clippy", "--target", "wasm32-wasip1", "--", "-D", "warnings"]
 
-  fmt:
-    description: "Format code"
-    command: "cargo fmt"
+  format:
+    description: "Format Rust Code"
+    command: "cargo"
+    args: ["fmt"]
 
   fmt-check:
-    description: "Check code formatting"
-    command: "cargo fmt -- --check"
+    description: "Check Rust Code Formatting"
+    command: "cargo"
+    args: ["fmt", "--", "--check"]
 
   clean:
-    description: "Clean build artifacts"
-    command: "cargo clean"
+    description: "Cargo Clean"
+    command: "cargo"
+    args: ["clean"]

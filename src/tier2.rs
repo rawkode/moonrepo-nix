@@ -269,7 +269,7 @@ pub fn install_dependencies(
                 .into(),
         ),
         InstallType::DevenvInfo => Some(
-            ExecCommandInput::new("devenv", ["info"])
+            ExecCommandInput::new("devenv", ["shell", "echo", "installing dependencies"])
                 .cwd(input.root.clone())
                 .into(),
         ),
