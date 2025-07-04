@@ -4,3 +4,8 @@ projects:
 vcs:
   provider: "github"
   defaultBranch: "main"
+
+unstable_remote:
+  host: 'grpcs://cache.depot.dev'
+  auth:
+    token: 'DEPOT_TOKEN'
