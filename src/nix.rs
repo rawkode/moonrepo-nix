@@ -126,6 +126,16 @@ pub fn locate_dependencies_root(
 }
 
 #[plugin_fn]
+pub fn install_dependencies(
+    Json(_input): Json<InstallDependenciesInput>,
+) -> FnResult<Json<InstallDependenciesOutput>> {
+    // Nix manages dependencies through the shell environment,
+    // so we don't need to run any explicit install commands here.
+    // The actual environment setup happens in setup_environment.
+    Ok(Json(InstallDependenciesOutput::default()))
+}
+
+#[plugin_fn]
 pub fn setup_environment(
     Json(input): Json<SetupEnvironmentInput>,
 ) -> FnResult<Json<SetupEnvironmentOutput>> {
