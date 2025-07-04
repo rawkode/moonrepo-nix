@@ -1,4 +1,4 @@
-name: ci
+name: CI
 
 on:
   pull_request:
@@ -9,33 +9,34 @@ on:
 env:
   CARGO_TERM_COLOR: always
 
-permissions:
-  pull-requests: write
-
 jobs:
   ci:
-    name: ci
+    name: CI
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - uses: moonrepo/setup-rust@v1
         with:
-          fetch-depth: 0
+          components: rustfmt, clippy
+          cache-base: master
 
-      - uses: cachix/install-nix-action@v30
+      - name: Setup toolchain
+        run: |
+          rustup target add wasm32-wasip1
+
+      - name: Check formatting
+        run: cargo fmt --check
+
+      - name: Run clippy
+        run: cargo clippy --target wasm32-wasip1 -- -D warnings
+
+      - name: Build plugin
+        run: cargo build --target wasm32-wasip1 --release
+
+      - name: Upload WASM artifact
+        uses: actions/upload-artifact@v4
         with:
-          nix_path: nixpkgs=channel:nixos-unstable
-
-      - uses: cachix/cachix-action@v14
-        with:
-          name: devenv
-
-      - run: nix profile install nixpkgs#devenv
-
-      - uses: moonrepo/setup-toolchain@v0
-
-      - run: moon ci format build
-
-      - uses: moonrepo/run-report-action@v1
-        if: github.event_name == 'pull_request'
-        with:
-          access-token: ${{ secrets.GITHUB_TOKEN }}
+          name: moon_toolchain_nix.wasm
+          path: target/wasm32-wasip1/release/moon_toolchain_nix.wasm
+          if-no-files-found: error
