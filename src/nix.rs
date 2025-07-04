@@ -96,6 +96,36 @@ pub fn parse_manifest(
 }
 
 #[plugin_fn]
+pub fn locate_dependencies_root(
+    Json(input): Json<LocateDependenciesRootInput>,
+) -> FnResult<Json<LocateDependenciesRootOutput>> {
+    let config = get_toolchain_config::<NixToolchainConfig>()?;
+    let starting_dir = &input.starting_dir;
+
+    // Check for Nix environment files in the starting directory
+    let nix_env = match () {
+        _ if config.use_devenv
+            && (starting_dir.join("devenv.nix").exists()
+                || starting_dir.join("devenv.yaml").exists()) =>
+        {
+            NixEnv::Devenv
+        }
+        _ if config.use_flake && starting_dir.join("flake.nix").exists() => NixEnv::NixFlake,
+        _ if config.use_flox && starting_dir.join(".flox").exists() => NixEnv::Flox,
+        _ if config.use_shell_nix && starting_dir.join("shell.nix").exists() => NixEnv::NixShell,
+        _ => NixEnv::None,
+    };
+
+    match nix_env {
+        NixEnv::None => Ok(Json(LocateDependenciesRootOutput::default())),
+        _ => Ok(Json(LocateDependenciesRootOutput {
+            root: Some(starting_dir.to_path_buf()),
+            members: None,
+        })),
+    }
+}
+
+#[plugin_fn]
 pub fn setup_environment(
     Json(input): Json<SetupEnvironmentInput>,
 ) -> FnResult<Json<SetupEnvironmentOutput>> {
