@@ -22,7 +22,7 @@ moon_config = "0.1.6"
 moon_pdk = { version = "0.2.3", features = ["schematic"] }
 moon_pdk_api = "0.2.4"
 rustc-hash = "2.1.1"
-schematic = { version = "0.18.8", default-features = false, features = ["config", "schema"] }
+schematic = { version = "0.18.10", default-features = false, features = ["config", "schema"] }
 serde = { version = "1.0.219", features = ["derive"] }
 starbase_utils = { version = "0.11.11", default-features = false, features = ["toml"] }
 
