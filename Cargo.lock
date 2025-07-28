@@ -383,7 +383,7 @@ dependencies = [
  "serde_json",
  "syn",
  "tempfile",
- "toml",
+ "toml 0.8.23",
 ]
 
 [[package]]
@@ -831,8 +831,18 @@ version = "0.20.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fc7f46116c46ff9ab3eb1597a45688b6715c6e628b5c133e288e709a29bcb4ee"
 dependencies = [
- "darling_core",
- "darling_macro",
+ "darling_core 0.20.11",
+ "darling_macro 0.20.11",
+]
+
+[[package]]
+name = "darling"
+version = "0.21.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a79c4acb1fd5fa3d9304be4c76e031c54d2e92d172a393e24b19a14fe8532fe9"
+dependencies = [
+ "darling_core 0.21.0",
+ "darling_macro 0.21.0",
 ]
 
 [[package]]
@@ -850,12 +860,37 @@ dependencies = [
 ]
 
 [[package]]
+name = "darling_core"
+version = "0.21.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "74875de90daf30eb59609910b84d4d368103aaec4c924824c6799b28f77d6a1d"
+dependencies = [
+ "fnv",
+ "ident_case",
+ "proc-macro2",
+ "quote",
+ "strsim",
+ "syn",
+]
+
+[[package]]
 name = "darling_macro"
 version = "0.20.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fc34b93ccb385b40dc71c6fceac4b2ad23662c7eeb248cf10d529b7e055b6ead"
 dependencies = [
- "darling_core",
+ "darling_core 0.20.11",
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "darling_macro"
+version = "0.21.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e79f8e61677d5df9167cd85265f8e5f64b215cdea3fb55eebc3e622e44c7a146"
+dependencies = [
+ "darling_core 0.21.0",
  "quote",
  "syn",
 ]
@@ -900,11 +935,11 @@ dependencies = [
 
 [[package]]
 name = "derive_setters"
-version = "0.1.7"
+version = "0.1.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d9c848e86c87e5cc305313041c5677d4d95d60baa71cf95e5f6ea2554bb629ff"
+checksum = "ae5c625eda104c228c06ecaf988d1c60e542176bd7a490e60eeda3493244c0c9"
 dependencies = [
- "darling",
+ "darling 0.20.11",
  "proc-macro2",
  "quote",
  "syn",
@@ -1093,7 +1128,7 @@ dependencies = [
  "serde",
  "serde_json",
  "sha2",
- "toml",
+ "toml 0.8.23",
  "tracing",
  "tracing-subscriber",
  "ureq",
@@ -2364,9 +2399,9 @@ dependencies = [
 
 [[package]]
 name = "moon_common"
-version = "0.1.2"
+version = "0.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "548c82378203b0b006f9d441b9b62f2b8d19db9fef4095a7f90b4f22a47e55fa"
+checksum = "4b7edb73cbae5ea3003fd6a1e77dcfc1c8d231e66a37a95e9dd811e76575ecaa"
 dependencies = [
  "compact_str 0.9.0",
  "dirs 6.0.0",
@@ -2382,16 +2417,16 @@ dependencies = [
 
 [[package]]
 name = "moon_config"
-version = "0.1.6"
+version = "0.1.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f7de350539719e359f7058740a6dffa8f5ef218d9f8abdfde39549d3e3aa8ee8"
+checksum = "8dd7dc18ea2b07e431239d75a82cf54030e385c5fb589ded9b82f53782aac466"
 dependencies = [
  "indexmap",
  "miette 7.6.0",
  "moon_common",
  "moon_target",
  "regex",
- "rpkl",
+ "rpkl 0.4.2",
  "rustc-hash",
  "schematic",
  "semver",
@@ -2399,7 +2434,7 @@ dependencies = [
  "serde_json",
  "serde_yml",
  "version_spec",
- "warpgate_api",
+ "warpgate_api 0.16.1",
 ]
 
 [[package]]
@@ -2461,7 +2496,7 @@ dependencies = [
  "schematic",
  "serde",
  "serde_json",
- "warpgate_api",
+ "warpgate_api 0.15.2",
 ]
 
 [[package]]
@@ -2497,9 +2532,9 @@ dependencies = [
 
 [[package]]
 name = "moon_target"
-version = "0.1.2"
+version = "0.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "27ba190435ea1860ea25b25e2785606a821dfa18700ef009c8049c75fe3893a7"
+checksum = "efe36964c54c3b328c75aa4bd6848d0dfc1daa16db9164386e8e87a2a4f03c14"
 dependencies = [
  "compact_str 0.9.0",
  "miette 7.6.0",
@@ -2916,7 +2951,7 @@ dependencies = [
  "system_env",
  "thiserror 2.0.12",
  "version_spec",
- "warpgate_api",
+ "warpgate_api 0.15.2",
 ]
 
 [[package]]
@@ -3349,6 +3384,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "rpkl"
+version = "0.5.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e2126df50e5bd715fd3c96d04676d5c927c979512395db457637fc201fcb2f5a"
+dependencies = [
+ "dunce",
+ "rmp-serde",
+ "rmpv",
+ "serde",
+]
+
+[[package]]
 name = "rust-netrc"
 version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3531,34 +3578,36 @@ dependencies = [
 
 [[package]]
 name = "schematic"
-version = "0.18.9"
+version = "0.18.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "07b95bd13dffb790b0e429396ba6796202c117d5d23619a3ca03c4edbabb1a64"
+checksum = "fe968b13534878e9c8b42013520b926430f45d1823fff8feaaef542e7dc49969"
 dependencies = [
  "garde",
  "indexmap",
  "miette 7.6.0",
- "rpkl",
+ "regex",
+ "rpkl 0.5.2",
  "schematic_macros",
  "schematic_types",
+ "semver",
  "serde",
  "serde_json",
  "serde_path_to_error",
  "serde_yml",
  "starbase_styles",
  "thiserror 2.0.12",
- "toml",
+ "toml 0.9.2",
  "tracing",
 ]
 
 [[package]]
 name = "schematic_macros"
-version = "0.18.7"
+version = "0.18.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "34d1b42cdaa842e110bef5df244a9c38e663fc96bd99634a777c887935bf1451"
+checksum = "8dad8ec65bab250820fa9616523d9216a1d9f37092293d9223f6ccc3e6f9b301"
 dependencies = [
  "convert_case",
- "darling",
+ "darling 0.21.0",
  "proc-macro2",
  "quote",
  "syn",
@@ -3566,18 +3615,18 @@ dependencies = [
 
 [[package]]
 name = "schematic_types"
-version = "0.10.4"
+version = "0.10.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5b9677ed1240dda3bc00a5cf7c9439aec7f9d17c131297355b79000fe51ec5db"
+checksum = "9bedeb0ba9745d6271e7c0dbac7a225a8bd915c23f293acb8ba345e3bf031ed0"
 dependencies = [
  "indexmap",
  "regex",
- "rpkl",
+ "rpkl 0.5.2",
  "semver",
  "serde",
  "serde_json",
  "serde_yml",
- "toml",
+ "toml 0.9.2",
  "url",
 ]
 
@@ -3647,9 +3696,9 @@ dependencies = [
 
 [[package]]
 name = "serde_json"
-version = "1.0.140"
+version = "1.0.141"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "20068b6e96dc6c9bd23e01df8827e6c7e1f2fddd43c21810382803c136b99373"
+checksum = "30b9eff21ebe718216c6ec64e1d9ac57087aad11efc64e32002bce4a0d4c03d3"
 dependencies = [
  "indexmap",
  "itoa",
@@ -3673,6 +3722,15 @@ name = "serde_spanned"
 version = "0.6.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bf41e0cfaf7226dca15e8197172c295a782857fcb97fad1808a166870dee75a3"
+dependencies = [
+ "serde",
+]
+
+[[package]]
+name = "serde_spanned"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "40734c41988f7306bb04f0ecf60ec0f3f1caa34290e4e8ea471dcd3346483b83"
 dependencies = [
  "serde",
 ]
@@ -3987,7 +4045,7 @@ dependencies = [
  "serde_yml",
  "starbase_styles",
  "thiserror 2.0.12",
- "toml",
+ "toml 0.8.23",
  "tracing",
  "url",
  "wax",
@@ -4104,9 +4162,9 @@ dependencies = [
 
 [[package]]
 name = "system_env"
-version = "0.8.1"
+version = "0.8.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9525c909d2d8096ebb6ee5cc2010996d8b5b90507f86fed5b74a971c7b260e5d"
+checksum = "39590f36b7836c1b8babca008c9f2be4685e06deb1b2c3437a84ee778c282200"
 dependencies = [
  "regex",
  "schematic",
@@ -4341,9 +4399,24 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dc1beb996b9d83529a9e75c17a1686767d148d70663143c7854d8b4a09ced362"
 dependencies = [
  "serde",
- "serde_spanned",
- "toml_datetime",
+ "serde_spanned 0.6.9",
+ "toml_datetime 0.6.11",
  "toml_edit",
+]
+
+[[package]]
+name = "toml"
+version = "0.9.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ed0aee96c12fa71097902e0bb061a5e1ebd766a6636bb605ba401c45c1650eac"
+dependencies = [
+ "indexmap",
+ "serde",
+ "serde_spanned 1.0.0",
+ "toml_datetime 0.7.0",
+ "toml_parser",
+ "toml_writer",
+ "winnow",
 ]
 
 [[package]]
@@ -4356,6 +4429,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "toml_datetime"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bade1c3e902f58d73d3f294cd7f20391c1cb2fbcb643b73566bc773971df91e3"
+dependencies = [
+ "serde",
+]
+
+[[package]]
 name = "toml_edit"
 version = "0.22.27"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4363,9 +4445,18 @@ checksum = "41fe8c660ae4257887cf66394862d21dbca4a6ddd26f04a3560410406a2f819a"
 dependencies = [
  "indexmap",
  "serde",
- "serde_spanned",
- "toml_datetime",
+ "serde_spanned 0.6.9",
+ "toml_datetime 0.6.11",
  "toml_write",
+ "winnow",
+]
+
+[[package]]
+name = "toml_parser"
+version = "1.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "97200572db069e74c512a14117b296ba0a80a30123fbbb5aa1f4a348f639ca30"
+dependencies = [
  "winnow",
 ]
 
@@ -4374,6 +4465,12 @@ name = "toml_write"
 version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5d99f8c9a7727884afe522e9bd5edbfc91a3312b36a77b5fb8926e4c31a41801"
+
+[[package]]
+name = "toml_writer"
+version = "1.0.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fcc842091f2def52017664b53082ecbbeb5c7731092bad69d2c63050401dfd64"
 
 [[package]]
 name = "tower"
@@ -4627,9 +4724,9 @@ checksum = "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a"
 
 [[package]]
 name = "version_spec"
-version = "0.9.2"
+version = "0.9.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "090c018911f942637e074841f933bec5f72732d317ccf3acd4422a528f41e70f"
+checksum = "0b1925476832e6f4c08d2d8eeb5f26cd43c6bb34147fafd5ff9b4c4d323908ac"
 dependencies = [
  "compact_str 0.9.0",
  "human-sort",
@@ -4698,7 +4795,7 @@ dependencies = [
  "tokio",
  "tracing",
  "ureq",
- "warpgate_api",
+ "warpgate_api 0.15.2",
 ]
 
 [[package]]
@@ -4718,6 +4815,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "warpgate_api"
+version = "0.16.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ea89fee6166766c32e8822583a17e8776688a82087c6e24bb1ea208a6de2b3e0"
+dependencies = [
+ "anyhow",
+ "derive_setters",
+ "rustc-hash",
+ "schematic",
+ "serde",
+ "serde_json",
+ "system_env",
+ "thiserror 2.0.12",
+]
+
+[[package]]
 name = "warpgate_pdk"
 version = "0.14.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4725,7 +4838,7 @@ checksum = "e988d7861d375c2b4749831bf41629572a493ae998a40376b251cbdd70e2047c"
 dependencies = [
  "extism-pdk",
  "serde",
- "warpgate_api",
+ "warpgate_api 0.15.2",
 ]
 
 [[package]]
@@ -4976,7 +5089,7 @@ dependencies = [
  "serde",
  "serde_derive",
  "sha2",
- "toml",
+ "toml 0.8.23",
  "windows-sys 0.59.0",
  "zstd",
 ]
