@@ -18,7 +18,7 @@ crate-type = ["cdylib", "lib"]
 
 [dependencies]
 extism-pdk = "1.4.1"
-moon_config = "0.1.6"
+moon_config = "0.1.7"
 moon_pdk = { version = "0.2.3", features = ["schematic"] }
 moon_pdk_api = "0.2.4"
 rustc-hash = "2.1.1"
