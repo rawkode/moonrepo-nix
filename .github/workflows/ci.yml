@@ -35,7 +35,7 @@ jobs:
         run: cargo build --target wasm32-wasip1 --release
 
       - name: Upload WASM artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: moon_toolchain_nix.wasm
           path: target/wasm32-wasip1/release/moon_toolchain_nix.wasm
